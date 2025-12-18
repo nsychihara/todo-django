@@ -1,120 +1,87 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>To-Do List</title>
-
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            margin-top: 60px;
-        }
-
-        .container {
-            background: #fff;
-            padding: 30px;
-            width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        form.add-task {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        form.add-task input {
-            flex: 1;
-            padding: 8px;
-        }
-
-        form.add-task button {
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .task-title {
-            flex: 1;
-        }
-
-        .completed {
-            text-decoration: line-through;
-            color: #999;
-        }
-
-        .actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .actions button {
-            cursor: pointer;
-        }
-    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container">
-    <h1>📝 To-Do List</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 
-    <form method="post" action="{% url 'task_add' %}" class="add-task">
-        {% csrf_token %}
-        {{ form.title }}
-        <button type="submit">Adicionar</button>
-    </form>
+            <div class="card shadow-sm">
+                <div class="card-body">
 
-    <ul>
-        {% for task in tasks %}
-            <li>
-                <span class="task-title {% if task.completed %}completed{% endif %}">
-                    {{ task.title }}
-                </span>
+                    <h3 class="text-center mb-4">📝 To-Do List</h3>
 
-                <div class="actions">
-                    <form method="post" action="{% url 'task_toggle' task.id %}">
+                    <form
+                        method="post"
+                        action="{% url 'task_add' %}"
+                        class="d-flex gap-2 mb-4"
+                    >
                         {% csrf_token %}
-                        <button type="submit">
-                            {% if task.completed %}
-                                ↩
-                            {% else %}
-                                ✔
-                            {% endif %}
+                        {{ form.title }}
+                        <button type="submit" class="btn btn-primary">
+                            Adicionar
                         </button>
                     </form>
 
-                    <form method="post" action="{% url 'task_delete' task.id %}">
-                        {% csrf_token %}
-                        <button type="submit">🗑</button>
-                    </form>
+                    <ul class="list-group list-group-flush">
+                        {% for task in tasks %}
+                            <li class="list-group-item d-flex align-items-center justify-content-between">
+
+                                <span class="{% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+                                    {{ task.title }}
+                                </span>
+
+                                <div class="btn-group btn-group-sm">
+
+                                    <form method="post" action="{% url 'task_toggle' task.id %}">
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="btn btn-outline-success"
+                                            title="Concluir / Desmarcar"
+                                        >
+                                            {% if task.completed %}↩{% else %}✔{% endif %}
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="{% url 'task_delete' task.id %}">
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="btn btn-outline-danger"
+                                            title="Excluir"
+                                        >
+                                            🗑
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-center text-muted">
+                                Nenhuma tarefa cadastrada.
+                            </li>
+                        {% endfor %}
+                    </ul>
+
                 </div>
-            </li>
-        {% empty %}
-            <li>Nenhuma tarefa cadastrada.</li>
-        {% endfor %}
-    </ul>
+            </div>
+
+        </div>
+    </div>
 </div>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 </html>
